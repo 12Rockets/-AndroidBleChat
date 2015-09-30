@@ -20,6 +20,7 @@ import java.util.UUID;
 
 /**
  * Created by ngencic on 13.9.15..
+ * BleAdvertiser starts a Gatt server and advertises it's services
  */
 public class BleAdvertiser {
 
@@ -40,6 +41,10 @@ public class BleAdvertiser {
         mLogger = logger;
     }
 
+    /**
+     * startAdvertising will open a Gatt server, add our chat services to it and start advertisement with default settings.
+     * Advertising won't start if bluetooth is disabled or device doesn't support the Peripheral mode.
+     */
     public void startAdvertising() {
         if (mBluetoothManager.getAdapter().isEnabled()) {
             if (mBluetoothManager.getAdapter().isMultipleAdvertisementSupported()) {
@@ -126,6 +131,10 @@ public class BleAdvertiser {
         }, ADVERTISE_TIMEOUT);
     }
 
+    /**
+     * sendMessage will send a message represented as a String, over the BLE if server was successfully started and client has connected.
+     * @param msg message to be sent
+     */
     public void sendMessage(String msg) {
         if (mConnectedDevice != null) {
             BluetoothGattCharacteristic characteristic = ServiceFactory.generateService().getCharacteristic(UUID.fromString(Constants.CHAT_CHARACTERISTIC_UUID));
@@ -134,6 +143,9 @@ public class BleAdvertiser {
         }
     }
 
+    /**
+     * destroy will close the gatt server if it was opened. Method should be called once we're done with the BLE communication, to clear up the resources.
+     */
     public void destroy() {
         if (mGattserver != null) {
             mGattserver.clearServices();

@@ -9,6 +9,10 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * Created by ngencic on 13.9.15..
+ * MainActivity controls UI that enables BLE connection establishing, messages exchanging and BLE events logging
+ */
 public class MainActivity extends Activity implements OnClickListener, ILogger {
 
     private TextView mTextViewLog;

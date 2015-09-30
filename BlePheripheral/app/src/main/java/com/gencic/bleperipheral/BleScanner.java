@@ -23,6 +23,7 @@ import java.util.UUID;
 
 /**
  * Created by ngencic on 13.9.15..
+ * BleScanner scans, connects to Gatt server and sends messages to devices that provide our chat service
  */
 public class BleScanner {
 
@@ -46,7 +47,11 @@ public class BleScanner {
         mLogger = logger;
     }
 
-    public void startScanning(){
+    /**
+     * startScanning will search for devices that provide our BLE chat service and connect to
+     * gatt server on them. Scanning won't start if Bluetooth is disabled.
+     */
+    public void startScanning() {
         if (mBluetoothManager.getAdapter().isEnabled()) {
             mDiscoveredDevices.clear();
             ScanFilter.Builder filterBuilder = new ScanFilter.Builder();
@@ -73,7 +78,7 @@ public class BleScanner {
         }
     }
 
-    private void connectToGattServer(BluetoothDevice device){
+    private void connectToGattServer(BluetoothDevice device) {
         device.connectGatt(mContext, false, new BluetoothGattCallback() {
             @Override
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
@@ -122,6 +127,11 @@ public class BleScanner {
         });
     }
 
+    /**
+     * sendMessage will send a message over BLE to the Gatt server if we have connected to it
+     * and discovered our chat characteristic.
+     * @param msg message to be sent
+     */
     public void sendMessage(String msg) {
         if (mCharacteristic != null) {
             mCharacteristic.setValue(msg);
@@ -129,6 +139,10 @@ public class BleScanner {
         }
     }
 
+    /**
+     * destroy should be called as soon as we are done with BLE communication, to disconnect
+     * from the Gatt server and clear resources.
+     */
     public void destroy() {
         if (mGatt != null) {
             mGatt.disconnect();
